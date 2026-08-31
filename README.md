@@ -74,9 +74,10 @@ npm run preview
 ## Customization
 
 The website includes multiple sections:
-- **Home**: Hero section with call-to-action
-- **About**: Personal information and skills
-- **Projects**: Portfolio showcase
+- **Home**: Hero with a cross-fading stills slideshow, tagline, and call-to-action buttons
+- **Work**: "Selected Projects" grid — each card links to a project video
+- **Services**: Sound design / post-production service list
+- **About**: Bio and behind-the-scenes images
 - **Contact**: Contact form and social links
 
 You can easily customize the content by editing the components in `src/App.jsx`.
