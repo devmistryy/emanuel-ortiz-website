@@ -1,67 +1,59 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FaInstagram, FaLinkedinIn, FaVimeoV } from 'react-icons/fa'
-import { SiLetterboxd } from 'react-icons/si'
 import './App.css'
 
 const imageLinks = {
   homeSection: {
-    hero: '/images/homeSection/hero.png',
-    reelThumbnail: '/images/homeSection/reel-thumbnail.jpg',
-    stills1: '/images/homeSection/stills1.JPG',
-    stills2: '/images/homeSection/stills2.JPG',
-    stills3: '/images/homeSection/stills3.JPG',
+    heroVideo: '/videos/hero-bg.mp4',
+    heroPoster: '/images/homeSection/hero.png',
   },
+  // Client logos — white / transparent marks, shown on the black hero.
+  clients: [
+    { name: 'Blumhouse', src: '/images/clients/blumhouse.png' },
+    { name: 'Cheetos', src: '/images/clients/cheetos.png' },
+    { name: 'Dead Atlantic', src: '/images/clients/dead-atlantic.png' },
+    { name: 'Blinkko', src: '/images/clients/blinkko.png' },
+    { name: 'Mark', src: '/images/clients/mark.png' },
+    { name: 'USC Swim Club', src: '/images/clients/usc-swim-club.png' },
+  ],
   aboutSection: {
-    headshot: '/images/aboutSection/headshot.jpeg',
-    bts1: '/images/aboutSection/bts1.JPG',
-    bts2: '/images/aboutSection/bts2.jpeg',
-    bts3: '/images/aboutSection/bts3.JPEG',
-    bts4: '/images/aboutSection/bts4.JPG',
+    headshot: '/images/aboutSection/headshot-seated.jpg',
   },
-  // Placeholder stills reused from existing assets until final artwork is supplied.
+  // Bill's Favorite Snack links off-YouTube, so it keeps a placeholder still until real
+  // artwork is supplied. The other linked projects render their own YouTube thumbnail instead
+  // (see YoutubeThumb) — Chase and Chaos Concerto have no thumbnail yet and render as
+  // image-less "Coming Soon" cards.
   work: {
-    navys: '/images/ACQ STILL.jpeg',
-    mrTattoo: '/images/SISTERLAND STILL.jpeg',
-    aLittleNudge: '/images/ITS STILL.jpeg',
-    chaosConcerto: '/images/CC STILL.jpeg',
-    partakeHolidays: '/images/Still 2026-04-07 203014_1.87.1.jpeg',
-    breathHeld: '/images/Still 2026-04-07 203014_1.1.1.jpeg',
+    billsFavoriteSnack: '/images/work/bills-favorite-snack.jpg',
+    chaosConcerto: '/images/work/chaos-concerto.jpg',
+    chase: '/images/work/chase.jpg',
   },
 }
-
-// Hero background slideshow — cross-fades through a set of stills.
-const heroStills = [
-  imageLinks.homeSection.stills1,
-  imageLinks.homeSection.stills2,
-  imageLinks.homeSection.stills3,
-  '/images/CC STILL.jpeg',
-  '/images/ITS STILL.jpeg',
-]
 
 const followSocialLinks = {
   vimeo: 'https://vimeo.com/user154303130',
   instagram: 'https://www.instagram.com/emanuel.ortiiz/',
   linkedin: 'https://www.linkedin.com/in/emanuel-ortiz-892890271/',
-  letterboxd: 'https://letterboxd.com/emanuelortiz/'
 }
 
 function App() {
   const [activeTab, setActiveTab] = useState('home')
 
+  // This is a single-page app — switching tabs swaps content in place rather than
+  // navigating, so the browser keeps whatever scroll position you were at. Reset to
+  // the top whenever the active tab changes.
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [activeTab])
+
   const navTabs = ['home', 'work', 'services', 'about', 'contact']
 
   return (
-    <div
-      className="app"
-      style={{
-        '--hero-image': `url('${imageLinks.homeSection.hero}')`,
-        '--reel-thumbnail-image': `url('${imageLinks.homeSection.reelThumbnail}')`
-      }}
-    >
+    <div className="app">
       <header className="header">
         <nav className="navbar">
           <button className="logo" onClick={() => setActiveTab('home')}>
-            EMANUEL ORTIZ
+            FREQ
           </button>
           <ul className="nav-links">
             {navTabs.map((tab) => (
@@ -82,13 +74,13 @@ function App() {
         {activeTab === 'home' && <HomeSection imageLinks={imageLinks} setActiveTab={setActiveTab} />}
         {activeTab === 'work' && <WorkSection imageLinks={imageLinks} />}
         {activeTab === 'services' && <ServicesSection />}
-        {activeTab === 'about' && <AboutSection imageLinks={imageLinks} />}
+        {activeTab === 'about' && <AboutSection imageLinks={imageLinks} setActiveTab={setActiveTab} />}
         {activeTab === 'contact' && <ContactSection />}
       </main>
 
       <footer className="footer">
         <div className="footer-inner">
-          <p className="footer-brand">EMANUEL ORTIZ</p>
+          <p className="footer-brand">FREQ</p>
           <div className="footer-socials">
             <a
               href={followSocialLinks.vimeo}
@@ -118,7 +110,7 @@ function App() {
               <FaLinkedinIn size={22} />
             </a>
           </div>
-          <p className="footer-copyright">&copy; 2026 Emanuel Ortiz</p>
+          <p className="footer-copyright">&copy; 2026 FREQ</p>
         </div>
       </footer>
     </div>
@@ -126,35 +118,30 @@ function App() {
 }
 
 function HomeSection({ imageLinks, setActiveTab }) {
-  const { stills1, stills2, stills3 } = imageLinks.homeSection
-  const [slide, setSlide] = useState(0)
+  const videoRef = useRef(null)
 
+  // React can drop the `muted` attribute on render, which blocks autoplay — force it on.
   useEffect(() => {
-    const id = setInterval(() => {
-      setSlide((current) => (current + 1) % heroStills.length)
-    }, 4500)
-    return () => clearInterval(id)
+    if (videoRef.current) videoRef.current.muted = true
   }, [])
 
   return (
     <>
       <section className="hero-section">
-        <div className="hero-slideshow">
-          {heroStills.map((src, index) => (
-            <div
-              key={src}
-              className={`hero-slide ${index === slide ? 'is-active' : ''}`}
-              style={{ backgroundImage: `url('${src}')` }}
-            />
-          ))}
-        </div>
+        <video
+          ref={videoRef}
+          className="hero-video"
+          src={imageLinks.homeSection.heroVideo}
+          poster={imageLinks.homeSection.heroPoster}
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-name">EMANUEL ORTIZ</h1>
-          <p className="hero-subtitle">Sound Designer &bull; Re-Recording Mixer &bull; Post-Production</p>
-          <p className="hero-tagline">
-            Immersive worlds for narrative films, commercials, and music videos.
-          </p>
+          <h1 className="hero-name">FREQ</h1>
+          <p className="hero-subtitle">Sound Design &bull; Mixing &bull; Post Sound</p>
           <div className="hero-cta-row">
             <button className="hero-cta" onClick={() => setActiveTab('work')}>
               View Work
@@ -162,74 +149,114 @@ function HomeSection({ imageLinks, setActiveTab }) {
             <button className="hero-cta secondary" onClick={() => setActiveTab('contact')}>
               Get In Touch
             </button>
-            <a
-              className="hero-reel-link"
-              href={followSocialLinks.vimeo}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Watch Reel
-            </a>
           </div>
         </div>
       </section>
 
-      <section className="home-stills-section" aria-label="Stills">
-        <div className="home-stills-grid">
-          <img src={stills1} alt="" className="home-stills-image" />
-          <img src={stills2} alt="" className="home-stills-image" />
-          <img src={stills3} alt="" className="home-stills-image" />
-        </div>
-      </section>
-
-      {/* Director's reel block — uncomment to restore
-      <section className="directors-reel-section">
-        <div className="reel-header">
-          <h2 className="reel-title">DIRECTOR'S REEL</h2>
-          <p className="reel-subtitle">
-            For a full list of festivals and awards, <a href="#" className="reel-link">click here</a>.
-          </p>
-          <div className="festival-icons">
-            <div className="festival-icon">🎬</div>
-            <div className="festival-icon">🏆</div>
-            <div className="festival-icon">📽️</div>
-            <div className="festival-icon">🎞️</div>
-            <div className="festival-icon">🎭</div>
-          </div>
-        </div>
-
-        <div className="reel-video-container">
-          <div className="video-player">
-            <div className="video-thumbnail">
-              <div className="thumbnail-img"></div>
-              <div className="play-button-overlay">
-                <div className="red-play-button">
-                  <Play size={32} fill="white" color="white" />
-                </div>
-              </div>
-            </div>
-            <div className="video-info">
-              <div className="video-title-section">
-                <h3 className="video-title">My 2024 Cinematography Reel</h3>
-                <p className="video-creator">Emanuel Ortiz</p>
-              </div>
-            </div>
+      <section className="clients-section">
+        <div className="clients-section-inner">
+          <p className="clients-label">Our Clients</p>
+          <div className="clients-row">
+            {imageLinks.clients.map((client) => (
+              <img
+                key={client.name}
+                src={client.src}
+                alt={client.name}
+                className="client-logo"
+              />
+            ))}
           </div>
         </div>
       </section>
-      */}
+
+      <section className="reel-section">
+        <div className="reel-section-inner">
+          <h2 className="reel-section-title">The Reel</h2>
+          <a
+            className="reel-watch-link"
+            href={followSocialLinks.vimeo}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Watch the Reel
+          </a>
+          <p className="reel-wip-note">Full reel in progress &mdash; more work landing soon.</p>
+        </div>
+      </section>
+
+      <section className="view-work-band">
+        <button className="view-work-btn" onClick={() => setActiveTab('work')}>
+          View Work
+        </button>
+      </section>
     </>
+  )
+}
+
+// YouTube only renders the 1280x720 sizes for videos uploaded in HD, so fall back through
+// progressively smaller sizes it always generates until one actually loads.
+const YOUTUBE_THUMB_SIZES = ['maxresdefault', 'sddefault', 'hqdefault']
+
+function YoutubeThumb({ videoId, alt }) {
+  const [sizeIndex, setSizeIndex] = useState(0)
+
+  const tryNextSize = () =>
+    setSizeIndex((current) => Math.min(current + 1, YOUTUBE_THUMB_SIZES.length - 1))
+
+  return (
+    <img
+      src={`https://img.youtube.com/vi/${videoId}/${YOUTUBE_THUMB_SIZES[sizeIndex]}.jpg`}
+      alt={alt}
+      onError={tryNextSize}
+      onLoad={(event) => {
+        // Instead of a real 404, YouTube serves a 120x90 grey "unavailable" placeholder
+        // (as a 200 OK) when a given size doesn't exist for this video — treat that as a
+        // miss too and fall back to the next size.
+        const img = event.target
+        if (img.naturalWidth === 120 && img.naturalHeight === 90) tryNextSize()
+      }}
+    />
   )
 }
 
 function WorkSection({ imageLinks }) {
   const projects = [
-    { title: 'NAVYS', name: 'Maddie Jayne', image: imageLinks.work.navys, link: '#' },
-    { title: 'MR. TATTOO', name: 'Autumn Stallia', image: imageLinks.work.mrTattoo, link: '#' },
-    { title: 'A LITTLE NUDGE', name: 'Blinkko', image: imageLinks.work.aLittleNudge, link: '#' },
-    { title: 'CHAOS CONCERTO', name: 'Emanuel Ortiz', image: imageLinks.work.chaosConcerto, link: '#' },
-    { title: 'PARTAKE IN THE HOLIDAYS', name: 'Partake', image: imageLinks.work.partakeHolidays, link: '#' },
-    { title: 'BREATH HELD', name: 'USC Swim Club', image: imageLinks.work.breathHeld, link: '#' },
+    {
+      title: "BILL'S FAVORITE SNACK",
+      name: 'Cheetos x Blumhouse "The Flavor of Fear" campaign',
+      image: imageLinks.work.billsFavoriteSnack,
+      link: 'https://www.us-joy.com/cheetostheflavoroffear',
+    },
+    {
+      title: 'A LITTLE NUDGE',
+      name: 'Blinkko',
+      youtubeId: 'c5hShOYn4Uk',
+      link: 'https://www.youtube.com/watch?v=c5hShOYn4Uk',
+    },
+    {
+      title: 'CHAOS CONCERTO',
+      name: 'Emanuel Ortiz (Award Winning Sound Design)',
+      image: imageLinks.work.chaosConcerto,
+      link: 'https://vimeo.com/1086667627',
+    },
+    {
+      title: 'BREATH HELD',
+      name: 'USC Swim Club',
+      youtubeId: 'yjd7jU9vfhA',
+      link: 'https://www.youtube.com/watch?v=yjd7jU9vfhA',
+    },
+    {
+      title: 'FOR STORIES WE SHARE',
+      name: 'Mark',
+      youtubeId: '1B6a_9QZbbQ',
+      link: 'https://www.youtube.com/watch?v=1B6a_9QZbbQ',
+    },
+    {
+      title: 'CHASE',
+      name: 'Dead Atlantic',
+      image: imageLinks.work.chase,
+      link: 'https://deadatlantic.com/',
+    },
   ]
 
   return (
@@ -237,24 +264,47 @@ function WorkSection({ imageLinks }) {
       <div className="work-container">
         <h2 className="section-heading">Selected Projects</h2>
         <div className="work-grid">
-          {projects.map((project) => (
-            <a
-              key={project.title}
-              className="work-card"
-              href={project.link}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="work-card-thumb">
-                <img src={project.image} alt={project.title} />
-              </div>
+          {projects.map((project) => {
+            const caption = (
               <p className="work-card-caption">
                 <span className="work-card-title">{project.title}</span>
                 <span className="work-card-divider"> | </span>
                 <span className="work-card-name">{project.name}</span>
               </p>
-            </a>
-          ))}
+            )
+
+            // No video link yet — render a non-clickable card with a "Coming Soon" badge
+            // and no thumbnail (no accurate still to show).
+            if (!project.link) {
+              return (
+                <div key={project.title} className="work-card work-card-pending">
+                  <div className="work-card-thumb work-card-thumb-empty">
+                    <span className="work-card-pending-badge">Coming Soon</span>
+                  </div>
+                  {caption}
+                </div>
+              )
+            }
+
+            return (
+              <a
+                key={project.title}
+                className="work-card"
+                href={project.link}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div className="work-card-thumb">
+                  {project.youtubeId ? (
+                    <YoutubeThumb videoId={project.youtubeId} alt={project.title} />
+                  ) : (
+                    <img src={project.image} alt={project.title} />
+                  )}
+                </div>
+                {caption}
+              </a>
+            )
+          })}
         </div>
       </div>
     </section>
@@ -285,49 +335,53 @@ function ServicesSection() {
   )
 }
 
-function AboutSection({ imageLinks }) {
-  const { bts1, bts2, bts3, bts4 } = imageLinks.aboutSection
-
+function AboutSection({ imageLinks, setActiveTab }) {
   return (
     <section className="about-section">
-      <div className="about-container">
-        <div className="about-content">
-          <div className="about-text">
-            <p className="about-eyebrow">EMANUEL ORTIZ</p>
-            <h1 className="about-main-title">
-              Emanuel Ortiz is an award-winning sound designer from the USC School of Cinematic Arts.
-            </h1>
-
-            <div className="about-bio">
-              <p className="bio-paragraph">
-                Working across films, commercials, music videos, and short-form media. Alumni of the
-                Film &amp; Television Production at the USC School of Cinematic Arts.
-              </p>
-
-              <p className="bio-paragraph">
-                He is also the creative executive of LUMIEREY, a production company dedicated to
-                producing bold, visually striking work and supporting emerging storytellers.
-              </p>
-            </div>
-          </div>
-          <div className="about-image">
-            <div className="headshot">
+      {/* Intro — greeting, photo, short bio */}
+      <div className="about-intro">
+        <div className="about-intro-inner">
+          <h1 className="about-greeting">Hi, I&apos;m Emanuel.</h1>
+          <div className="about-intro-grid">
+            <div className="about-intro-photo-wrap">
               <img
                 src={imageLinks.aboutSection.headshot}
                 alt="Emanuel Ortiz"
-                className="headshot-image"
+                className="about-intro-photo"
               />
+            </div>
+            <div className="about-intro-copy">
+              <h2 className="about-intro-title">
+                Emanuel Ortiz is an award-winning sound designer from the USC School of Cinematic
+                Arts.
+              </h2>
+              <p className="about-intro-paragraph about-intro-paragraph-lead">
+                Alumnus of the Kevin Feige Division of Film &amp; Television Production at the USC
+                School of Cinematic Arts, Emanuel works across sound design and re-recording
+                mixing for films, commercials, music videos, and short-form media.
+              </p>
+              <p className="about-intro-paragraph">
+                His approach is rooted in your project&apos;s specific story, using sound to
+                create an atmosphere that immerses audiences into the world on screen.
+              </p>
+              <p className="about-intro-paragraph">
+                He created FREQ as a home for bold sound-driven work. A studio built on the belief
+                that the best sound pulls you in before you ever notice it.
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="about-bts">
-        <div className="about-bts-grid">
-          <img src={bts1} alt="" className="about-bts-image" />
-          <img src={bts2} alt="" className="about-bts-image" />
-          <img src={bts3} alt="" className="about-bts-image" />
-          <img src={bts4} alt="" className="about-bts-image" />
+      {/* CTA into Contact */}
+      <div className="about-story">
+        <div className="about-story-inner">
+          <div className="about-cta">
+            <h2 className="about-cta-title">Ready For Sound?</h2>
+            <button className="about-cta-btn" onClick={() => setActiveTab('contact')}>
+              Get In Touch
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -392,9 +446,6 @@ function ContactSection() {
                 </a>
                 <a href={followSocialLinks.linkedin} target="_blank" rel="noreferrer" className="social-icon" aria-label="LinkedIn">
                   <FaLinkedinIn size={24} />
-                </a>
-                <a href={followSocialLinks.letterboxd} target="_blank" rel="noreferrer" className="social-icon" aria-label="Letterboxd">
-                  <SiLetterboxd size={24} />
                 </a>
               </div>
             </div>
