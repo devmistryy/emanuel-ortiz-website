@@ -53,7 +53,7 @@ function App() {
       <header className="header">
         <nav className="navbar">
           <button className="logo" onClick={() => setActiveTab('home')}>
-            FREQ
+            EMANUEL ORTIZ
           </button>
           <ul className="nav-links">
             {navTabs.map((tab) => (
@@ -80,7 +80,7 @@ function App() {
 
       <footer className="footer">
         <div className="footer-inner">
-          <p className="footer-brand">FREQ</p>
+          <p className="footer-brand">EMANUEL ORTIZ</p>
           <div className="footer-socials">
             <a
               href={followSocialLinks.vimeo}
@@ -110,7 +110,7 @@ function App() {
               <FaLinkedinIn size={22} />
             </a>
           </div>
-          <p className="footer-copyright">&copy; 2026 FREQ</p>
+          <p className="footer-copyright">&copy; 2026 Emanuel Ortiz</p>
         </div>
       </footer>
     </div>
@@ -140,7 +140,7 @@ function HomeSection({ imageLinks, setActiveTab }) {
         />
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <h1 className="hero-name">FREQ</h1>
+          <h1 className="hero-name">EMANUEL ORTIZ</h1>
           <p className="hero-subtitle">Sound Design &bull; Mixing &bull; Post Sound</p>
           <div className="hero-cta-row">
             <button className="hero-cta" onClick={() => setActiveTab('work')}>
@@ -365,8 +365,7 @@ function AboutSection({ imageLinks, setActiveTab }) {
                 create an atmosphere that immerses audiences into the world on screen.
               </p>
               <p className="about-intro-paragraph">
-                He created FREQ as a home for bold sound-driven work. A studio built on the belief
-                that the best sound pulls you in before you ever notice it.
+                He believes that sound is half of the work and getting it right takes everything.
               </p>
             </div>
           </div>
