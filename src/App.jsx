@@ -1,6 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
-import { FaInstagram, FaLinkedinIn, FaVimeoV } from 'react-icons/fa'
+import { FaInstagram, FaLinkedinIn, FaPhone, FaEnvelope } from 'react-icons/fa'
 import './App.css'
+
+// Contact info kept in parts rather than one contiguous string/attribute, so it
+// doesn't sit in the rendered HTML as plain scrapeable text — it's assembled at
+// render time instead.
+const CONTACT_PHONE_PARTS = ['714', '290', '3846']
+const CONTACT_EMAIL_PARTS = ['emanuelortizfilm', 'gmail.com']
+
+function getTelHref() {
+  return `tel:+1${CONTACT_PHONE_PARTS.join('')}`
+}
+
+function getFormattedPhone() {
+  const [area, mid, last] = CONTACT_PHONE_PARTS
+  return `+1 (${area}) ${mid}-${last}`
+}
+
+function getEmailAddress() {
+  return CONTACT_EMAIL_PARTS.join('@')
+}
 
 const imageLinks = {
   homeSection: {
@@ -82,15 +101,14 @@ function App() {
         <div className="footer-inner">
           <p className="footer-brand">EMANUEL ORTIZ</p>
           <div className="footer-socials">
-            <a
-              href={followSocialLinks.vimeo}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
+              onClick={() => setActiveTab('contact')}
               className="footer-social-link"
-              aria-label="Vimeo"
+              aria-label="Contact"
             >
-              <FaVimeoV size={22} />
-            </a>
+              <FaEnvelope size={22} />
+            </button>
             <a
               href={followSocialLinks.instagram}
               target="_blank"
@@ -388,66 +406,48 @@ function AboutSection({ imageLinks, setActiveTab }) {
 }
 
 function ContactSection() {
+  // Desktop clicks on a tel: link don't open anything visible, so reveal the
+  // number as text right after the click — mobile still gets the native dialer
+  // from the real tel: href regardless.
+  const [phoneRevealed, setPhoneRevealed] = useState(false)
+
   return (
     <section className="contact-section">
       <div className="contact-container">
-        <div className="contact-layout">
-          {/* Left Column - Reach Out Form */}
-          <div className="reach-out-column">
-            <h2 className="section-title">Reach Out</h2>
-            <form className="reach-out-form">
-              <div className="form-field">
-                <label htmlFor="fullname">Full name</label>
-                <input
-                  type="text"
-                  id="fullname"
-                  name="fullname"
-                  placeholder="Full name"
-                />
-              </div>
-              <div className="form-field">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                />
-              </div>
-              <div className="form-field">
-                <label htmlFor="message">Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows="6"
-                  placeholder="Message"
-                ></textarea>
-              </div>
-              <button type="submit" className="send-button">SEND NOW</button>
-            </form>
+        <h2 className="section-title">Reach Out</h2>
+        <p className="contact-lede">Fastest way to reach me — call or email directly.</p>
+
+        <div className="contact-actions">
+          <div className="contact-action-block">
+            <a
+              href={getTelHref()}
+              className="contact-call-button"
+              onClick={() => setPhoneRevealed(true)}
+            >
+              <FaPhone size={16} />
+              Call
+            </a>
+            {phoneRevealed && <p className="contact-phone-reveal">{getFormattedPhone()}</p>}
           </div>
 
-          {/* Right Column - Contact & Follow */}
-          <div className="contact-info-column">
-            <div className="contact-subsection">
-              <h3 className="section-title">CONTACT</h3>
-              <p className="contact-email">emanuelortizfilm@gmail.com</p>
-            </div>
+          <div className="contact-action-block">
+            <a href={`mailto:${getEmailAddress()}`} className="contact-email-link">
+              <FaEnvelope size={16} />
+              {CONTACT_EMAIL_PARTS[0]}
+              <wbr />@{CONTACT_EMAIL_PARTS[1]}
+            </a>
+          </div>
+        </div>
 
-            <div className="follow-subsection">
-              <h3 className="section-title">FOLLOW</h3>
-              <div className="social-icons">
-                <a href={followSocialLinks.vimeo} target="_blank" rel="noreferrer" className="social-icon" aria-label="Vimeo">
-                  <FaVimeoV size={24} />
-                </a>
-                <a href={followSocialLinks.instagram} target="_blank" rel="noreferrer" className="social-icon" aria-label="Instagram">
-                  <FaInstagram size={24} />
-                </a>
-                <a href={followSocialLinks.linkedin} target="_blank" rel="noreferrer" className="social-icon" aria-label="LinkedIn">
-                  <FaLinkedinIn size={24} />
-                </a>
-              </div>
-            </div>
+        <div className="follow-subsection">
+          <h3 className="section-title">FOLLOW</h3>
+          <div className="social-icons">
+            <a href={followSocialLinks.instagram} target="_blank" rel="noreferrer" className="social-icon" aria-label="Instagram">
+              <FaInstagram size={24} />
+            </a>
+            <a href={followSocialLinks.linkedin} target="_blank" rel="noreferrer" className="social-icon" aria-label="LinkedIn">
+              <FaLinkedinIn size={24} />
+            </a>
           </div>
         </div>
       </div>

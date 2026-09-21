@@ -736,13 +736,6 @@
   margin: 0 auto;
 }
 
-.contact-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 120px;
-  align-items: start;
-}
-
 .section-title {
   font-size: 48px;
   font-weight: 700;
@@ -752,77 +745,58 @@
   margin-bottom: 40px;
 }
 
-.reach-out-form {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-field label {
-  color: #111;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
-
-.form-field input,
-.form-field textarea {
-  background: #fff;
-  border: none;
-  padding: 14px 16px;
+.contact-lede {
   font-size: 16px;
-  color: #333;
-  font-family: inherit;
+  color: #444;
+  margin: -12px 0 40px;
+  max-width: 480px;
 }
 
-.form-field input::placeholder,
-.form-field textarea::placeholder {
-  color: #999;
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 80px;
 }
 
-.form-field textarea {
-  resize: vertical;
-  min-height: 120px;
+.contact-action-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.send-button {
+.contact-call-button,
+.contact-email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   background: #333;
   color: #fff;
   border: none;
-  padding: 14px 40px;
-  font-size: 12px;
+  padding: 16px 32px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
   cursor: pointer;
   transition: opacity 0.3s ease;
-  align-self: flex-start;
 }
 
-.send-button:hover {
+.contact-call-button:hover,
+.contact-email-link:hover {
   opacity: 0.8;
 }
 
-.contact-info-column {
-  display: flex;
-  flex-direction: column;
-  gap: 80px;
+.contact-email-link {
+  text-transform: none;
+  letter-spacing: 0.5px;
 }
 
-.contact-subsection {
-  margin-bottom: 20px;
-}
-
-.contact-email {
+.contact-phone-reveal {
+  font-size: 18px;
+  font-weight: 600;
   color: #111;
-  font-size: 16px;
   letter-spacing: 0.5px;
 }
 
@@ -901,6 +875,9 @@
   justify-content: center;
   color: #fff;
   text-decoration: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
   transition: background 0.25s ease, transform 0.2s ease;
 }
 
@@ -1033,17 +1010,14 @@
     padding: 80px 20px 48px;
   }
 
-  .contact-layout {
-    grid-template-columns: 1fr;
-    gap: 80px;
+  .contact-actions {
+    flex-direction: column;
+    gap: 28px;
+    margin-bottom: 60px;
   }
 
   .section-title {
     font-size: 32px;
-  }
-
-  .contact-info-column {
-    gap: 60px;
   }
 
   .directors-reel-section {
