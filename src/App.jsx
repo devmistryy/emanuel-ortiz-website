@@ -24,7 +24,6 @@ function getEmailAddress() {
 const imageLinks = {
   homeSection: {
     heroVideo: '/videos/hero-bg.mp4',
-    heroPoster: '/images/homeSection/hero.png',
   },
   // Client logos — white / transparent marks, shown on the black hero.
   clients: [
@@ -44,6 +43,10 @@ const imageLinks = {
   // image-less "Coming Soon" cards.
   work: {
     billsFavoriteSnack: '/images/work/bills-favorite-snack.jpg',
+    // AI-upscaled from YouTube's best available thumbnail for this video (640x480 —
+    // no maxres/HD thumbnail exists on YouTube for it) since the live YoutubeThumb
+    // fallback looked noticeably soft next to the other cards.
+    aLittleNudge: '/images/work/a-little-nudge.jpg',
     chaosConcerto: '/images/work/chaos-concerto.jpg',
     chase: '/images/work/chase.jpg',
   },
@@ -150,7 +153,6 @@ function HomeSection({ imageLinks, setActiveTab }) {
           ref={videoRef}
           className="hero-video"
           src={imageLinks.homeSection.heroVideo}
-          poster={imageLinks.homeSection.heroPoster}
           autoPlay
           loop
           muted
@@ -248,7 +250,7 @@ function WorkSection({ imageLinks }) {
     {
       title: 'A LITTLE NUDGE',
       name: 'Blinkko',
-      youtubeId: 'c5hShOYn4Uk',
+      image: imageLinks.work.aLittleNudge,
       link: 'https://www.youtube.com/watch?v=c5hShOYn4Uk',
     },
     {
