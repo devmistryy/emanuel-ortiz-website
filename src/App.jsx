@@ -37,10 +37,9 @@ const imageLinks = {
   aboutSection: {
     headshot: '/images/aboutSection/headshot-seated.jpg',
   },
-  // Bill's Favorite Snack links off-YouTube, so it keeps a placeholder still until real
-  // artwork is supplied. The other linked projects render their own YouTube thumbnail instead
-  // (see YoutubeThumb) — Chase and Chaos Concerto have no thumbnail yet and render as
-  // image-less "Coming Soon" cards.
+  // Bill's Favorite Snack keeps its own still. The other linked projects render their own
+  // YouTube thumbnail instead (see YoutubeThumb) — Chase and Chaos Concerto have no
+  // thumbnail yet and render as image-less "Coming Soon" cards.
   work: {
     billsFavoriteSnack: '/images/work/bills-favorite-snack.jpg',
     // AI-upscaled from YouTube's best available thumbnail for this video (640x480 —
@@ -245,7 +244,7 @@ function WorkSection({ imageLinks }) {
       title: "BILL'S FAVORITE SNACK",
       name: 'Cheetos x Blumhouse "The Flavor of Fear" campaign',
       image: imageLinks.work.billsFavoriteSnack,
-      link: 'https://www.us-joy.com/cheetostheflavoroffear',
+      link: 'https://youtu.be/eLkXxmLYNF0?is=jnD7F0rUGVZpMYIX',
     },
     {
       title: 'A LITTLE NUDGE',
