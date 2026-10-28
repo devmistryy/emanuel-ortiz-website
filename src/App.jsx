@@ -46,6 +46,8 @@ const imageLinks = {
     // no maxres/HD thumbnail exists on YouTube for it) since the live YoutubeThumb
     // fallback looked noticeably soft next to the other cards.
     aLittleNudge: '/images/work/a-little-nudge.jpg',
+    grandmasBirthday: '/images/work/grandmas-birthday.jpg',
+    partakeInTheHolidays: '/images/work/partake-in-the-holidays.jpg',
     chaosConcerto: '/images/work/chaos-concerto.jpg',
     chase: '/images/work/chase.jpg',
   },
@@ -93,8 +95,8 @@ function App() {
 
       <main className="main-content">
         {activeTab === 'home' && <HomeSection imageLinks={imageLinks} setActiveTab={setActiveTab} />}
-        {activeTab === 'work' && <WorkSection imageLinks={imageLinks} />}
-        {activeTab === 'services' && <ServicesSection />}
+        {activeTab === 'work' && <WorkSection imageLinks={imageLinks} setActiveTab={setActiveTab} />}
+        {activeTab === 'services' && <ServicesSection setActiveTab={setActiveTab} />}
         {activeTab === 'about' && <AboutSection imageLinks={imageLinks} setActiveTab={setActiveTab} />}
         {activeTab === 'contact' && <ContactSection />}
       </main>
@@ -156,6 +158,7 @@ function HomeSection({ imageLinks, setActiveTab }) {
           loop
           muted
           playsInline
+          preload="auto"
         />
         <div className="hero-overlay"></div>
         <div className="hero-content">
@@ -174,7 +177,6 @@ function HomeSection({ imageLinks, setActiveTab }) {
 
       <section className="clients-section">
         <div className="clients-section-inner">
-          <p className="clients-label">Our Clients</p>
           <div className="clients-row">
             {imageLinks.clients.map((client) => (
               <img
@@ -238,13 +240,35 @@ function YoutubeThumb({ videoId, alt }) {
   )
 }
 
-function WorkSection({ imageLinks }) {
+// CTA into Contact, shared by the Work, Services and About pages.
+function ReadyForSound({ setActiveTab, dark }) {
+  return (
+    <div className={dark ? 'about-story about-story-dark' : 'about-story'}>
+      <div className="about-story-inner">
+        <div className="about-cta">
+          <h2 className="about-cta-title">Ready For Sound?</h2>
+          <button className="about-cta-btn" onClick={() => setActiveTab('contact')}>
+            Get In Touch
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function WorkSection({ imageLinks, setActiveTab }) {
   const projects = [
     {
       title: "BILL'S FAVORITE SNACK",
       name: 'Cheetos x Blumhouse "The Flavor of Fear" campaign',
       image: imageLinks.work.billsFavoriteSnack,
       link: 'https://youtu.be/eLkXxmLYNF0?is=jnD7F0rUGVZpMYIX',
+    },
+    {
+      title: "GRANDMA'S BIRTHDAY",
+      name: 'Lucas',
+      image: imageLinks.work.grandmasBirthday,
+      link: 'https://www.youtube.com/watch?v=M5K1yRy69hs',
     },
     {
       title: 'A LITTLE NUDGE',
@@ -265,6 +289,12 @@ function WorkSection({ imageLinks }) {
       link: 'https://www.youtube.com/watch?v=yjd7jU9vfhA',
     },
     {
+      title: 'PARTAKE IN THE HOLIDAYS',
+      name: 'Partake',
+      image: imageLinks.work.partakeInTheHolidays,
+      link: 'https://www.youtube.com/watch?v=U--6tHr5aPM',
+    },
+    {
       title: 'FOR STORIES WE SHARE',
       name: 'Mark',
       youtubeId: '1B6a_9QZbbQ',
@@ -279,6 +309,7 @@ function WorkSection({ imageLinks }) {
   ]
 
   return (
+    <>
     <section className="work-section">
       <div className="work-container">
         <h2 className="section-heading">Selected Projects</h2>
@@ -327,20 +358,22 @@ function WorkSection({ imageLinks }) {
         </div>
       </div>
     </section>
+    <ReadyForSound setActiveTab={setActiveTab} dark />
+    </>
   )
 }
 
-function ServicesSection() {
+function ServicesSection({ setActiveTab }) {
   const services = [
     'Sound Design',
     'Re-Recording Mixing',
     'Foley Editing',
     'ADR Editing',
     'Dialogue Editing',
-    'Commercial & Music Video Post',
   ]
 
   return (
+    <>
     <section className="services-section">
       <div className="services-container">
         <h2 className="section-heading">Services</h2>
@@ -349,8 +382,15 @@ function ServicesSection() {
             <li key={service}>{service}</li>
           ))}
         </ul>
+        <ul className="services-subtext">
+          {['Commercials', 'Advertising Campaigns', 'Films', 'TV'].map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
       </div>
     </section>
+    <ReadyForSound setActiveTab={setActiveTab} dark />
+    </>
   )
 }
 
@@ -391,17 +431,7 @@ function AboutSection({ imageLinks, setActiveTab }) {
         </div>
       </div>
 
-      {/* CTA into Contact */}
-      <div className="about-story">
-        <div className="about-story-inner">
-          <div className="about-cta">
-            <h2 className="about-cta-title">Ready For Sound?</h2>
-            <button className="about-cta-btn" onClick={() => setActiveTab('contact')}>
-              Get In Touch
-            </button>
-          </div>
-        </div>
-      </div>
+      <ReadyForSound setActiveTab={setActiveTab} />
     </section>
   )
 }
